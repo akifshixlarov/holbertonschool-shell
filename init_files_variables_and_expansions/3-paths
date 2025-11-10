@@ -1,0 +1,13 @@
+#!/bin/bash
+# PATH-i ':' işarəsinə görə bölürük və massivə çeviririk
+IFS=':' read -ra dirs <<< "$PATH"
+
+count=0
+for dir in "${dirs[@]}"; do
+    # Yalnız boş olmayan direktoriyaları sayırıq
+    [[ -n "$dir" ]] && ((count++))
+done
+
+# Nəticəni çap edirik
+echo "$count"
+
