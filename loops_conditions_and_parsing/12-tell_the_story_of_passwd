@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Script that displays username, UID, and home directory from /etc/passwd
+
+while IFS=: read -r username password uid gid info home shell; do
+    [[ -z "$shell" ]] && shell="."
+
+    [[ -z "$info" ]] && info=""
+    
+    echo "The user $username is part of the $gid gang, lives in $home and rides $shell. $uid's place is protected by the passcode $password, more info about the user here: $info"
+    
+done < /etc/passwd
