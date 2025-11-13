@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # Script that displays username, UID, and home directory from /etc/passwd
 
-awk '{print $1, $9}' apache-access.log | sort | uniq -c
+awk '{awk '{print $1 " " $9}' apache-access.log
