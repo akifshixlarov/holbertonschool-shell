@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Script that ...
+
+for file in *; do
+	[[ "$file" == .* ]] && continue
+	
+	after_dash="${file#*-}"
+
+	if [[ "$file" == *-* ]]; then
+		echo "$after_dash"
+	else
+		echo "$file"
+	fi
+done
