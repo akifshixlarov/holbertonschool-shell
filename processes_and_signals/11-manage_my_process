@@ -22,8 +22,15 @@ stop() {
 }
 
 restart() {
-    stop
-    start
+    # Stop silently
+    if [ -f "$PID_FILE" ]; then
+        kill "$(cat $PID_FILE)" 2>/dev/null
+        rm -f "$PID_FILE"
+    fi
+    # Start silently
+    "$SCRIPT" &
+    echo $! > "$PID_FILE"
+    # Only this message is shown
     echo "manage_my_process restarted"
 }
 
