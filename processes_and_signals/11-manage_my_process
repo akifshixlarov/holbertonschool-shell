@@ -2,51 +2,44 @@
 #This script prints "To infinity and beyond" indefinitely with a 2-second pause
 # shellcheck disable=SC2009
 
-# Path to PID file
 PID_FILE="/var/run/my_process.pid"
-# Path to the managed script
-SCRIPT="/usr/local/bin/manage_my_process"
+PROCESS_NAME="manage_my_process"
 
-start() {
-    "$SCRIPT" &
+start_process() {
+    # Fon rejimində proses başlat və PID faylına yaz
+    ./$PROCESS_NAME &
     echo $! > "$PID_FILE"
     echo "manage_my_process started"
 }
 
-stop() {
+stop_process() {
     if [ -f "$PID_FILE" ]; then
-        kill "$(cat $PID_FILE)"
-        rm -f "$PID_FILE"
+        PID=$(cat "$PID_FILE")
+        if kill "$PID" 2>/dev/null; then
+            rm -f "$PID_FILE"
+            echo "manage_my_process stopped"
+        else
+            echo "Process not running, removing PID file"
+            rm -f "$PID_FILE"
+        fi
+    else
+        echo "Process not running"
     fi
-    echo "manage_my_process stopped"
-}
-
-restart() {
-    # Stop silently
-    if [ -f "$PID_FILE" ]; then
-        kill "$(cat $PID_FILE)" 2>/dev/null
-        rm -f "$PID_FILE"
-    fi
-    # Start silently
-    "$SCRIPT" &
-    echo $! > "$PID_FILE"
-    # Only this message is shown
-    echo "manage_my_process restarted"
 }
 
 case "$1" in
     start)
-        start
+        start_process
         ;;
     stop)
-        stop
+        stop_process
         ;;
     restart)
-        restart
+        stop_process
+        start_process
+        echo "manage_my_process restarted"
         ;;
     *)
         echo "Usage: manage_my_process {start|stop|restart}"
         ;;
 esac
-
-exit 0
