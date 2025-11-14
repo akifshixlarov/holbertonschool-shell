@@ -2,32 +2,44 @@
 #This script prints "To infinity and beyond" indefinitely with a 2-second pause
 # shellcheck disable=SC2009
 
+# Path to PID file
 PID_FILE="/var/run/my_process.pid"
-DAEMON="./manage_my_process"
+# Path to the managed script
+SCRIPT="/usr/local/bin/manage_my_process"
+
+start() {
+    "$SCRIPT" &
+    echo $! > "$PID_FILE"
+    echo "manage_my_process started"
+}
+
+stop() {
+    if [ -f "$PID_FILE" ]; then
+        kill "$(cat $PID_FILE)"
+        rm -f "$PID_FILE"
+    fi
+    echo "manage_my_process stopped"
+}
+
+restart() {
+    stop
+    start
+    echo "manage_my_process restarted"
+}
 
 case "$1" in
     start)
-        $DAEMON &
-        echo $! > $PID_FILE
-        echo "manage_my_process started"
+        start
         ;;
     stop)
-        if [ -f "$PID_FILE" ]; then
-            kill "$(cat $PID_FILE)"
-            rm -f "$PID_FILE"
-            echo "manage_my_process stopped"
-        fi
+        stop
         ;;
     restart)
-        if [ -f "$PID_FILE" ]; then
-            kill "$(cat $PID_FILE)"
-            rm -f "$PID_FILE"
-        fi
-        $DAEMON &
-        echo $! > $PID_FILE
-        echo "manage_my_process restarted"
+        restart
         ;;
     *)
         echo "Usage: manage_my_process {start|stop|restart}"
         ;;
 esac
+
+exit 0
