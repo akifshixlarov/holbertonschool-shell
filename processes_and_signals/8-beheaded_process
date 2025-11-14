@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
 #This script prints "To infinity and beyond" indefinitely with a 2-second pause
 # shellcheck disable=SC2009
-
-pid=$(pgrep -f "7-highlander")
-if [ -n "$pid" ]; then
-    kill "$pid"
-fi
+pkill -f "7-highlander"
