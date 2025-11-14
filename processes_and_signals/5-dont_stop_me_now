@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#This script prints "To infinity and beyond" indefinitely with a 2-second pause
+# shellcheck disable=SC2009
+pids=$(pgrep -f 4-to_infinity_and_beyond)
+
+if [ -n "$pids" ]; then
+    kill $pids
+fi
+
