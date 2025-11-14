@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#This script prints "To infinity and beyond" indefinitely with a 2-second pause
+# shellcheck disable=SC2009
+
+# PID faylını yarat və öz PID-ni ora yaz
+echo $$ > /var/run/myscript.pid
+
+# SIGTERM → I hate the kill command
+trap 'echo "I hate the kill command"' SIGTERM
+
+# SIGINT → Y U no love me?!
+trap 'echo "Y U no love me?!"' SIGINT
+
+# SIGQUIT və SIGTERM → faylı sil və skripti dayandır
+trap 'rm -f /var/run/myscript.pid; exit 0' SIGQUIT SIGTERM
+
+# Sonsuz döngü
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
+done
